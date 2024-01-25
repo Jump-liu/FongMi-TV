@@ -115,7 +115,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 
 import master.flame.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.model.IDisplay;
+import master.flame.danmaku.danmaku.model.IDisplayer;
 import master.flame.danmaku.danmaku.model.android.DanmakuContext;
 import tv.danmaku.ijk.media.player.ui.IjkVideoView;
 
@@ -412,13 +412,17 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     }
 
     private void setDanmuView() {
+        int maxLine = Setting.getDanmuLine(2);
         mPlayers.setDanmuView(mBinding.danmaku);
+        float[] range = {2.4f, 1.8f, 1.2f, 0.8f};
+        float speed = range[Setting.getDanmuSpeed()];
+        float alpha = Setting.getDanmuAlpha() / 100.0f;
         HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, 2);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, 2);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, 2);
-        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, 1);
-        mDanmakuContext.setDanmakuStyle(IDisplay.DANMAKU_STYLE_STROKEN, 3).setMaximumLines(maxLines).setDanmakuMargin(8).setScaleTextSize(0.8f);
+        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, maxLine);
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setDanmakuMargin(8).setScaleTextSize(0.8f);
         checkDanmuImg();
     }
 
@@ -583,6 +587,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
 
     private void checkDanmu(String danmu) {
         mBinding.danmaku.release();
+        if (!Setting.isDanmuLoad()) return;
         mBinding.danmaku.setVisibility(danmu.isEmpty() ? View.GONE : View.VISIBLE);
         if (danmu.length() > 0) App.execute(() -> mBinding.danmaku.prepare(new Parser(danmu), mDanmakuContext));
     }
@@ -641,7 +646,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
         mBinding.control.nextRoot.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.control.prevRoot.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.episode.setVisibility(items.size() == 0 ? View.GONE : View.VISIBLE);
-        mBinding.reverse.setVisibility(items.size() < 10 ? View.GONE : View.VISIBLE);
+        mBinding.reverse.setVisibility(items.size() < 2 ? View.GONE : View.VISIBLE);
         mBinding.more.setVisibility(items.size() < 10 ? View.GONE : View.VISIBLE);
         mEpisodeAdapter.addAll(items);
     }
@@ -1208,7 +1213,6 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
                 hideProgress();
                 mPlayers.reset();
                 setDefaultTrack();
-                mPlayers.prepared();
                 setTrackVisible(true);
                 checkPlayImg(mPlayers.isPlaying());
                 mHistory.setPlayer(mPlayers.getPlayer());
@@ -1251,6 +1255,7 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     private void setDefaultTrack() {
         if (isInitTrack()) {
             setInitTrack(false);
+            mPlayers.prepared();
             mPlayers.setTrack(Track.find(getHistoryKey()));
         }
     }
@@ -1637,8 +1642,8 @@ public class VideoActivity extends BaseActivity implements Clock.Callback, Custo
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         if (isRedirect()) return;
-        mPiP.enter(this, getScale() == 2);
         if (isLock()) App.post(this::onLock, 500);
+        if (mPlayers.haveTrack(C.TRACK_TYPE_VIDEO)) mPiP.enter(this, getScale() == 2);
     }
 
     @Override
