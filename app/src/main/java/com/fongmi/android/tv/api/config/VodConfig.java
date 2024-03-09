@@ -21,6 +21,7 @@ import com.github.catvod.crawler.Spider;
 import com.github.catvod.crawler.SpiderNull;
 import com.github.catvod.net.OkHttp;
 import com.github.catvod.utils.Json;
+import com.github.catvod.utils.Util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -193,7 +194,7 @@ public class VodConfig {
     }
 
     private void initLive(JsonObject object) {
-        Config temp = Config.find(config, 1);
+        Config temp = Config.find(config, 1).save();
         boolean sync = LiveConfig.get().needSync(config.getUrl());
         if (sync) LiveConfig.get().clear().config(temp).parse(object);
     }
@@ -218,12 +219,12 @@ public class VodConfig {
     }
 
     private String parseApi(String api) {
-        if (api.startsWith("file") || api.startsWith("assets")) return UrlUtil.convert(api);
+        if (api.startsWith("file") || api.startsWith("clan") || api.startsWith("assets")) return UrlUtil.convert(api);
         return api;
     }
 
     private String parseExt(String ext) {
-        if (ext.startsWith("file") || ext.startsWith("assets")) return UrlUtil.convert(ext);
+        if (ext.startsWith("file") || ext.startsWith("clan") || ext.startsWith("assets")) return UrlUtil.convert(ext);
         if (ext.startsWith("img+")) return Decoder.getExt(ext);
         return ext;
     }
@@ -247,10 +248,16 @@ public class VodConfig {
         else if (csp) jarLoader.setRecent(site.getJar());
     }
 
+    public void setRecent(String jar) {
+        if (jarLoader == null) jarLoader = new JarLoader();
+        jarLoader.parseJar(Util.md5(jar), jar);
+        jarLoader.setRecent(jar);
+    }
+
     public Object[] proxyLocal(Map<String, String> params) {
-        if (params.containsKey("do") && params.get("do").equals("js")) {
+        if ("js".equals(params.get("do"))) {
             return jsLoader.proxyInvoke(params);
-        } else if (params.containsKey("do") && params.get("do").equals("py")) {
+        } else if ("py".equals(params.get("do"))) {
             return pyLoader.proxyInvoke(params);
         } else {
             return jarLoader.proxyInvoke(params);
@@ -353,14 +360,14 @@ public class VodConfig {
     public void setParse(Parse parse) {
         this.parse = parse;
         this.parse.setActivated(true);
-        config.parse(parse.getName()).update();
+        config.parse(parse.getName()).save();
         for (Parse item : getParses()) item.setActivated(parse);
     }
 
     public void setHome(Site home) {
         this.home = home;
         this.home.setActivated(true);
-        config.home(home.getKey()).update();
+        config.home(home.getKey()).save();
         for (Site item : getSites()) item.setActivated(home);
     }
 

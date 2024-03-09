@@ -81,6 +81,7 @@ public class JarLoader {
     }
 
     public void parseJar(String key, String jar) {
+        if (loaders.containsKey(key)) return;
         String[] texts = jar.split(";md5;");
         String md5 = texts.length > 1 ? texts[1].trim() : "";
         jar = texts[0];
@@ -93,6 +94,8 @@ public class JarLoader {
         } else if (jar.startsWith("file")) {
             load(key, Path.local(jar));
         } else if (jar.startsWith("assets")) {
+            parseJar(key, UrlUtil.convert(jar));
+        } else if (!jar.isEmpty()) {
             parseJar(key, UrlUtil.convert(jar));
         }
     }

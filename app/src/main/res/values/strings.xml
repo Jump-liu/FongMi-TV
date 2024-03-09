@@ -33,12 +33,15 @@
     <string name="play_ed">ED</string>
     <string name="play_next">Next</string>
     <string name="play_prev">Prev</string>
+    <string name="play_episodes">Episodes</string>
     <string name="play_loop">Loop</string>
     <string name="play_timer">Timer</string>
     <string name="play_time">Time</string>
     <string name="play_netspeed">Net Speed</string>
     <string name="play_duration">Duration</string>
+    <string name="play_mini_progress">Mini Progress</string>
     <string name="play_danmu">Danmu</string>
+    <string name="play_speed">Speed</string>
     <string name="play_change">Change</string>
     <string name="play_forward">→</string>
     <string name="play_backward">←</string>
@@ -73,6 +76,15 @@
     <string name="setting_custom">Custom setting</string>
     <string name="setting_quality">Image quality</string>
     <string name="setting_size">Image size</string>
+    <string name="setting_aggregated_search">Aggregated search</string>
+    <string name="setting_fullscreen_menu_key">Fullscreen menu key</string>
+    <string name="setting_home_menu_key">Home menu key</string>
+    <string name="setting_home_site_lock">Home site lock</string>
+    <string name="setting_incognito">Incognito mode</string>
+    <string name="setting_small_window_back_key">Small window back key</string>
+    <string name="setting_home_change_config">Home change config</string>
+    <string name="setting_home_ui">Home ui style</string>
+    <string name="setting_home_buttons">Home buttons</string>
     <string name="setting_doh">DoH</string>
     <string name="setting_proxy">Proxy</string>
     <string name="setting_cache">Cache</string>
@@ -85,6 +97,7 @@
 
     <!-- Player -->
     <string name="player">Player</string>
+    <string name="player_decode">Decode</string>
     <string name="player_render">Render</string>
     <string name="player_scale">Scale</string>
     <string name="player_caption">Caption style</string>
@@ -116,6 +129,9 @@
     <string name="dialog_config_hint">Please enter the config…</string>
     <string name="dialog_config_name">Please enter the name…</string>
     <string name="dialog_config_url">Please enter the url…</string>
+    <string name="dialog_delete_record">Delete all records?</string>
+    <string name="dialog_delete_keep">All keep records will be removed.</string>
+    <string name="dialog_delete_history">All history records will be removed.</string>
 
     <!-- Error -->
     <string name="error_config_get">Configuration get failed</string>
@@ -143,6 +159,7 @@
 
     <!-- Hint -->
     <string name="copied">Copied</string>
+    <string name="config_refreshed">Config rereshed</string>
 
     <!-- UNIT -->
     <string name="all">All</string>
@@ -211,6 +228,37 @@
     <string-array name="select_episode">
         <item>Single</item>
         <item>Multiple</item>
+    </string-array>
+
+    <string-array name="select_fullscreen_menu_key">
+        <item>Control</item>
+        <item>Episodes</item>
+    </string-array>
+
+    <string-array name="select_home_menu_key">
+        <item>Select dialog</item>
+        <item>Change site</item>
+        <item>Change config</item>
+        <item>History page</item>
+        <item>Search page</item>
+        <item>Push page</item>
+        <item>Keep page</item>
+        <item>Setting page</item>
+    </string-array>
+
+    <string-array name="select_small_window_back_key">
+        <item>Back</item>
+        <item>Focus move</item>
+    </string-array>
+
+    <string-array name="select_home_recommend">
+        <item>History</item>
+        <item>Site recommend</item>
+    </string-array>
+
+    <string-array name="select_home_ui">
+        <item>Simple style</item>
+        <item>TVBox style</item>
     </string-array>
 
     <string-array name="select_caption">
